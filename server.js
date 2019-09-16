@@ -1,5 +1,3 @@
-import Algo from './algorithm/algo';
-
 let mysql = require('mysql')
 let connection = mysql.createConnection({
     host: "localhost",
@@ -9,11 +7,11 @@ let connection = mysql.createConnection({
 });
 
 const express = require('express');
+const algorithmn = require('./algorithm/algo');
 const server = express();
 const port = 3001;
 
 server.use(express.json());
-
 
 connection.connect();
 
@@ -26,12 +24,10 @@ server.get('/',(req, res) => {
                     res.send(result); 
                 }
             });
-
 });
 
-server.get('/algorithm',(req, res) => {
-    res.send({"algo": Algo.algorithm() });
-
+server.get('/algorithm',async (req, res) => {
+        res.send( await algorithmn());
 });
 
 server.listen(port, () => console.log(`Example server listening on port ${port}!`));
