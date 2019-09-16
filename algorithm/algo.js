@@ -1,30 +1,30 @@
-    const axios = require('axios');
+module.exports = function algorithm(){
+    return orchestrator().then(x => x);
+}
 
-    async function dataHandler(position){
-        let res = await axios.get('http://localhost:3001/');
-        return position ? res.data[position]: res.data;
-    }
+const dateHandler = require('./date');
+const relativeFiller = require('./relative');
+const axios = require('axios');
 
-    async function algorithm(){
-        let dados = await dataHandler('0');
-        let filteringResp = dados.map(element => {
-            if(element.setor == 'GUILHOTINA' ){ 
-                return element;    
-            }
-        });
+async function dataHandler(position){
+    let res = await axios.get('http://localhost:3001/');
+    return position ? res.data[position]: res.data;
+}
 
-        let filteredResp = filteringResp.filter(
-                function(element){
-                    return element != undefined;
-        });
+async function orchestrator(){
+    let dados = await dataHandler();
+    let filteringResp = dados.map(element => {
+            return {
+                    setor:element['setor'].toUpperCase(),
+                    type:element['type'].toUpperCase(),
+                    process:element['process'].toUpperCase(),
+                    difference: dateHandler(element['start'], element['end']),
+                    qtdePessoa: (element['qtde'] / element['pessoas'])
+                    
+                  }
+                });
+    
+    return filteringResp;
+}
 
-        return filteredResp;
-    }
-
-
-   let data = algorithm();
-   console.log(data);
-
-
-
-
+orchestrator().then(x => console.log([... new Set(x)]));
