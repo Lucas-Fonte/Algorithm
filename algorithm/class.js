@@ -1,21 +1,32 @@
-const agenda = ['ext', 'gui', 'silk', 'corte'];
+const productType = ['AGENDA', 'CADERNO', 'SACOLA', 'EMBALAGEM'];
+const productOperations = new Array();
 
-function dateHandler(time){
-    return new Date(time);
-}
+productOperations['AGENDA'] = {
+                                ext: 200, 
+                                gui: 1000, 
+                                silk: 1500, 
+                                corte: 3000
+                            };
 
-const produto = {
-    type: 'AGENDAS',
-    qtde: 10000,
-    setores: agenda,
-    productionHour: 1000,
-    date: new Date(),   
+class Project {
+    constructor(type){
+            this.type = type;
+            this.qtde = 10000;
+            this.setores = productOperations[type];
+            this.date = new Date();
+    };
+    
     forecast(){
         const days = (this.qtde/this.productionHour);
-        const end = this.date.setDate(this.date.getDay() + days);
-        console.log(this.date + '\n' + timeStamp(end));
+        const end = new Date();
+        end.setDate((this.date.getDate() + days));
+        return end;
     }
 
-};
+    plusOne(){
+        return this.qtde + 10;
+    }
+}
 
-produto.forecast();
+const produto = new Project('AGENDA');
+console.log(produto.setores['ext']);
